@@ -1,0 +1,30 @@
+{
+  "name": "open-api-test",
+  "version": "1.0.0",
+  "description": "test melodi openapi spec",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "main": "tsc && node dist/index.js",
+    "generate-types": "npx openapi-typescript ../docs/openapi.yaml -o ./src/lib/api/melodi.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Melodi-fyi/open-api-test.git"
+  },
+  "author": "Greg Brown (greg@melodi.fyi)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Melodi-fyi/open-api-test/issues"
+  },
+  "homepage": "https://github.com/Melodi-fyi/open-api-test#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "openapi-fetch": "^0.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "openapi-typescript": "^7.4.3",
+    "typescript": "^5.6.3"
+  }
+}
