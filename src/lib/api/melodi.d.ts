@@ -16,9 +16,9 @@ export interface paths {
             parameters: {
                 query?: {
                     /** @description Single thread ID or list of thread IDs to filter by */
-                    ids?: number | number[];
+                    ids?: number[];
                     /** @description Single external user ID or list of external user IDs to filter by */
-                    externalUserIds?: string | string[];
+                    externalUserIds?: string[];
                     /** @description Search term to filter threads */
                     search?: string;
                     /** @description Search term to filter by user */
@@ -28,7 +28,7 @@ export interface paths {
                     /** @description Single intent ID or list of intent IDs to filter by */
                     intentIds?: number | number[];
                     /** @description Single user segment ID or list of user segment IDs to filter by */
-                    userSegmentIds?: number | number[];
+                    userSegmentIds?: number[];
                     /** @description Filter threads created before this date (ISO 8601 format, e.g. 2024-03-21T00:00:00Z) */
                     before?: string;
                     /** @description Filter threads created after this date (ISO 8601 format, e.g. 2024-03-21T00:00:00Z) */
@@ -51,8 +51,8 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            count?: number;
-                            rows?: components["schemas"]["Thread"][];
+                            count: number;
+                            rows: components["schemas"]["Thread"][];
                         };
                     };
                 };
@@ -430,13 +430,13 @@ export interface components {
             externalId?: string | null;
             /** @description ID of the organization to which the thread belongs */
             organizationId?: number;
-            /** @description ID of the project to which the thread belongs */
+            /** @description ID of the project to which the thread belongs, specify either projectId or projectName */
             projectId?: number | null;
-            /** @description Name of the project to which the thread belongs */
+            /** @description Name of the project to which the thread belongs, specify either projectId or projectName */
             projectName?: string | null;
             /** @description Array of messages associated with the thread */
             messages: (components["schemas"]["MarkdownMessage"] | components["schemas"]["JsonMessage"])[];
-            externalUser?: components["schemas"]["CreateExternalUserRequest"];
+            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
             /** @description Metadata associated with the thread */
             metadata?: {
                 [key: string]: string;
@@ -451,7 +451,7 @@ export interface components {
              * @description Date when the thread was last updated
              */
             updatedAt?: string;
-        } | unknown | unknown;
+        };
         /** Markdown Message */
         MarkdownMessage: {
             externalId?: string | null;
@@ -461,7 +461,7 @@ export interface components {
              */
             type: "markdown";
             role: string;
-            content?: string | null;
+            content: string | null;
             /** @default {} */
             metadata: {
                 [key: string]: string;
@@ -470,8 +470,11 @@ export interface components {
         /** JSON Message */
         JsonMessage: {
             externalId?: string | null;
-            /** @enum {string} */
-            type?: "json";
+            /**
+             * @default json
+             * @enum {string}
+             */
+            type: "json";
             role: string;
             jsonContent: {
                 [key: string]: unknown;
@@ -509,7 +512,7 @@ export interface components {
             /** @description Recommended - ID of the project this thread belongs to. Helps ensure correct thread identification */
             projectId?: number | null;
             /** @description External user information for associating feedback with a user */
-            externalUser?: components["schemas"]["CreateExternalUserRequest"];
+            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
             /**
              * @description Key-value pairs where:
              *     - key: attribute name (must match an existing attribute in the project)
@@ -556,9 +559,9 @@ export interface components {
             /** @description Text content of the feedback */
             feedbackText?: string | null;
             /** @description Information about the external user who provided the feedback */
-            externalUser?: components["schemas"]["ExternalUser"];
+            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
             /** @description List of attribute options with their full attribute details */
-            attributeOptions?: (components["schemas"]["AttributeOption"] & {
+            attributeOptions: (components["schemas"]["AttributeOption"] & {
                 attribute: components["schemas"]["Attribute"];
             })[];
             /** Format: date-time */
@@ -600,7 +603,7 @@ export interface components {
             metadata?: {
                 [key: string]: string;
             };
-            externalUser?: components["schemas"]["CreateExternalUserRequest"];
+            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
         } | {
             externalId?: string | null;
             projectId?: number | null;
@@ -609,7 +612,7 @@ export interface components {
             metadata?: {
                 [key: string]: string;
             };
-            externalUser?: components["schemas"]["CreateExternalUserRequest"];
+            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
         };
         /** @description Represents an attribute. Note: The combination of projectId and name must be unique.
          *      */
@@ -632,11 +635,11 @@ export interface components {
             /** @description Name of the attribute */
             name: string;
             /** @description List of options available for this attribute */
-            options?: components["schemas"]["AttributeOption"][];
+            options: components["schemas"]["AttributeOption"][];
             /** Format: date-time */
-            createdAt?: string;
+            createdAt: string;
             /** Format: date-time */
-            updatedAt?: string;
+            updatedAt: string;
         };
         /** @description Represents an attribute option. Note: The combination of attributeId and name must be unique.
          *      */
@@ -721,17 +724,6 @@ export interface components {
             segments: {
                 [key: string]: string;
             };
-        };
-        UserSegment: {
-            /**
-             * Format: int32
-             * @description Unique identifier for the user segment
-             */
-            id: number;
-            /** @description Name of the segment */
-            name: string;
-            /** @description Value associated with the segment */
-            value: string;
         };
     };
     responses: never;

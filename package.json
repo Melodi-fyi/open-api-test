@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "main": "tsc && node dist/index.js",
     "generate-types": "npx openapi-typescript ../docs/openapi.yaml -o ./src/lib/api/melodi.d.ts"
   },
   "repository": {
@@ -18,9 +19,11 @@
   },
   "homepage": "https://github.com/Melodi-fyi/open-api-test#readme",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "openapi-fetch": "^0.13.0"
   },
   "devDependencies": {
+    "@types/node": "^22.9.0",
     "openapi-typescript": "^7.4.3",
     "typescript": "^5.6.3"
   }
