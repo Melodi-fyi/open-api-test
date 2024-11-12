@@ -425,32 +425,31 @@ export interface components {
     schemas: {
         Thread: {
             /** @description Unique identifier for the thread */
-            id?: number | null;
+            id: number;
             /** @description External thread ID */
             externalId?: string | null;
             /** @description ID of the organization to which the thread belongs */
-            organizationId?: number;
-            /** @description ID of the project to which the thread belongs, specify either projectId or projectName */
-            projectId?: number | null;
-            /** @description Name of the project to which the thread belongs, specify either projectId or projectName */
-            projectName?: string | null;
-            /** @description Array of messages associated with the thread */
-            messages: (components["schemas"]["MarkdownMessage"] | components["schemas"]["JsonMessage"])[];
+            organizationId: number;
+            project: {
+                id: number;
+                name: string;
+            };
+            messages: components["schemas"]["Message"][];
             externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
             /** @description Metadata associated with the thread */
-            metadata?: {
+            metadata: {
                 [key: string]: string;
             };
             /**
              * Format: date-time
              * @description Date when the thread was created
              */
-            createdAt?: string;
+            createdAt: string;
             /**
              * Format: date-time
              * @description Date when the thread was last updated
              */
-            updatedAt?: string;
+            updatedAt: string;
         };
         /** Markdown Message */
         MarkdownMessage: {
@@ -599,7 +598,7 @@ export interface components {
             externalId?: string | null;
             projectId: number;
             projectName?: string | null;
-            messages: (components["schemas"]["MarkdownMessage"] | components["schemas"]["JsonMessage"])[];
+            messages: components["schemas"]["Message"][];
             metadata?: {
                 [key: string]: string;
             };
@@ -608,7 +607,7 @@ export interface components {
             externalId?: string | null;
             projectId?: number | null;
             projectName: string;
-            messages: (components["schemas"]["MarkdownMessage"] | components["schemas"]["JsonMessage"])[];
+            messages: components["schemas"]["Message"][];
             metadata?: {
                 [key: string]: string;
             };

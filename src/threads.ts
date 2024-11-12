@@ -14,6 +14,11 @@ export async function getThreads() {
     headers: {
       "api-key": process.env.MELODI_API_KEY,
     },
+    params: {
+      query: {
+        projectId: 12074,
+      },
+    },
   });
 
   if (error) {
@@ -30,6 +35,11 @@ export async function getThreads() {
 
       if (firstThread.messages[0]) {
         console.log(firstThread.messages[0].type);
+        if (firstThread.messages[0].type === "json") {
+          console.log(firstThread.messages[0].jsonContent);
+        } else if (firstThread.messages[0].type === "markdown") {
+          console.log(firstThread.messages[0].content);
+        }
       }
     }
   }
