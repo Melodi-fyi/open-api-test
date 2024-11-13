@@ -451,36 +451,34 @@ export interface components {
              */
             updatedAt: string;
         };
-        /** Markdown Message */
-        MarkdownMessage: {
+        BaseMessage: {
             externalId?: string | null;
-            /**
-             * @default markdown
-             * @enum {string}
-             */
-            type: "markdown";
             role: string;
-            content: string | null;
+        };
+        BaseMessageResponse: components["schemas"]["BaseMessage"] & {
             /** @default {} */
             metadata: {
                 [key: string]: string;
             };
         };
+        /** Markdown Message */
+        MarkdownMessage: components["schemas"]["BaseMessageResponse"] & {
+            /**
+             * @default markdown
+             * @enum {string}
+             */
+            type: "markdown";
+            content: string | null;
+        };
         /** JSON Message */
-        JsonMessage: {
-            externalId?: string | null;
+        JsonMessage: components["schemas"]["BaseMessageResponse"] & {
             /**
              * @default json
              * @enum {string}
              */
             type: "json";
-            role: string;
             jsonContent: {
                 [key: string]: unknown;
-            };
-            /** @default {} */
-            metadata: {
-                [key: string]: string;
             };
         };
         /** @description Message object that can be either a Markdown or JSON message.
@@ -488,6 +486,30 @@ export interface components {
          *     For JSON messages, use the 'jsonContent' field.
          *      */
         Message: components["schemas"]["MarkdownMessage"] | components["schemas"]["JsonMessage"];
+        BaseMessageCreateRequest: components["schemas"]["BaseMessage"] & {
+            metadata?: {
+                [key: string]: string;
+            } | null;
+        };
+        CreateMarkdownMessageRequest: components["schemas"]["BaseMessageCreateRequest"] & {
+            /**
+             * @default markdown
+             * @enum {string}
+             */
+            type: "markdown";
+            content: string;
+        };
+        CreateJsonMessageRequest: components["schemas"]["BaseMessageCreateRequest"] & {
+            /**
+             * @default json
+             * @enum {string}
+             */
+            type: "json";
+            jsonContent: {
+                [key: string]: unknown;
+            };
+        };
+        CreateMessageRequest: components["schemas"]["CreateMarkdownMessageRequest"] | components["schemas"]["CreateJsonMessageRequest"];
         Error: {
             error?: string;
         };
@@ -594,25 +616,23 @@ export interface components {
             /** @description Name of the project to be created */
             name: string;
         };
-        CreateThreadRequest: {
-            externalId?: string | null;
-            projectId: number;
-            projectName?: string | null;
-            messages: components["schemas"]["Message"][];
+        BaseCreateThreadRequest: {
+            externalId?: string;
+            messages: components["schemas"]["CreateMessageRequest"][];
             metadata?: {
                 [key: string]: string;
             };
-            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
-        } | {
-            externalId?: string | null;
-            projectId?: number | null;
-            projectName: string;
-            messages: components["schemas"]["Message"][];
-            metadata?: {
-                [key: string]: string;
-            };
-            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
+            externalUser?: components["schemas"]["CreateExternalUserRequest"];
         };
+        /** Create Thread with Project ID */
+        CreateThreadWithProjectIdRequest: components["schemas"]["BaseCreateThreadRequest"] & {
+            projectId: number;
+        };
+        /** Create Thread with Project Name */
+        CreateThreadWithProjectNameRequest: components["schemas"]["BaseCreateThreadRequest"] & {
+            projectName: string;
+        };
+        CreateThreadRequest: components["schemas"]["CreateThreadWithProjectIdRequest"] | components["schemas"]["CreateThreadWithProjectNameRequest"];
         /** @description Represents an attribute. Note: The combination of projectId and name must be unique.
          *      */
         Attribute: {

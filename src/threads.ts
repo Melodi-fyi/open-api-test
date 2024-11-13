@@ -44,3 +44,51 @@ export async function getThreads() {
     }
   }
 }
+
+export async function createThread() {
+  const { data, error } = await client.POST("/threads", {
+    headers: {
+      "api-key": process.env.MELODI_API_KEY,
+    },
+    body: {
+      externalId: "from-generated-client-2",
+      projectId: 12074,
+      messages: [
+        {
+          externalId: "1",
+          type: "markdown",
+          role: "user",
+          content: "What is 2 + 2?",
+          metadata: {
+            testKey: "testValue",
+          },
+        },
+        {
+          externalId: "2",
+          type: "json",
+          role: "calculator",
+          jsonContent: {
+            operation: "add",
+            operands: [2, 2],
+            answer: 4,
+          },
+        },
+        {
+          externalId: "3",
+          type: "markdown",
+          role: "assistant",
+          content: "2 + 2 = 4",
+        },
+      ],
+    },
+  });
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  if (data) {
+    console.log(data.id);
+  }
+}
