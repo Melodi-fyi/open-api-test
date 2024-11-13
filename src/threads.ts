@@ -45,8 +45,8 @@ export async function getThreads() {
   }
 }
 
-export async function createThread() {
-  const { data, error } = await client.POST("/threads", {
+export async function putThread() {
+  const { data, error } = await client.PUT("/threads", {
     headers: {
       "api-key": process.env.MELODI_API_KEY,
     },
@@ -80,6 +80,32 @@ export async function createThread() {
           content: "2 + 2 = 4",
         },
       ],
+    },
+  });
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  if (data) {
+    console.log(data.id);
+  }
+}
+
+export async function postFeedback() {
+  const { data, error } = await client.POST("/feedback", {
+    headers: {
+      "api-key": process.env.MELODI_API_KEY,
+    },
+    body: {
+      externalThreadId: "from-generated-client-2",
+      externalMessageId: "3",
+      feedbackType: "POSITIVE",
+      feedbackText: "this is test feedback",
+      externalUser: {
+        externalId: "mintlify-user-1",
+      },
     },
   });
 

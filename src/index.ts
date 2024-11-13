@@ -1,5 +1,6 @@
-import { createThread, getThreads } from "./threads";
+import { getThreads, postFeedback, putThread } from "./threads";
 
 console.log("Hello, world!");
 getThreads();
-createThread();
+putThread();
+postFeedback();

@@ -112,46 +112,7 @@ export interface paths {
                 };
             };
         };
-        /** Create a new thread */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            /** @description A thread object that needs to be created */
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["CreateThreadRequest"];
-                };
-            };
-            responses: {
-                /** @description Thread successfully created */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Thread"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Internal Server Error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -358,23 +319,7 @@ export interface paths {
             /** @description External user object for creation or update */
             requestBody: {
                 content: {
-                    "application/json": {
-                        /** @description External identifier for the user */
-                        externalId: string;
-                        /** @description User's email address */
-                        email?: string | null;
-                        /** @description User's name */
-                        name?: string | null;
-                        /** @description User's username */
-                        username?: string | null;
-                        /**
-                         * @description Key-value pairs where the key is the segment type name and the value is the segment value
-                         * @default {}
-                         */
-                        segments?: {
-                            [key: string]: string;
-                        };
-                    };
+                    "application/json": components["schemas"]["CreateExternalUserRequest"];
                 };
             };
             responses: {
@@ -525,15 +470,15 @@ export interface components {
              */
             feedbackType: "POSITIVE" | "NEGATIVE";
             /** @description Text content of the feedback */
-            feedbackText?: string | null;
+            feedbackText?: string;
             /** @description External ID of the thread containing the target message */
             externalThreadId: string;
             /** @description ID of the specific message for feedback. If not provided, feedback will be attached to the thread's last message */
-            externalMessageId?: string | null;
+            externalMessageId?: string;
             /** @description Recommended - ID of the project this thread belongs to. Helps ensure correct thread identification */
-            projectId?: number | null;
+            projectId?: number;
             /** @description External user information for associating feedback with a user */
-            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
+            externalUser?: components["schemas"]["CreateExternalUserRequest"];
             /**
              * @description Key-value pairs where:
              *     - key: attribute name (must match an existing attribute in the project)
@@ -590,14 +535,6 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
-        UserInfo: {
-            id?: string | null;
-            email: string;
-        };
-        JSONObject: {
-            [key: string]: string | number | boolean | components["schemas"]["JSONObject"] | components["schemas"]["JSONArray"];
-        };
-        JSONArray: components["schemas"]["JSONObject"][];
         Project: {
             /**
              * Format: int32
@@ -725,22 +662,21 @@ export interface components {
             /** @description External identifier for the user */
             externalId: string;
             /** @description User's email address. Will be transformed to undefined if null */
-            email?: string | null;
+            email?: string;
             /** @description User's name. Will be transformed to undefined if null */
-            name?: string | null;
+            name?: string;
             /** @description User's username. Will be transformed to undefined if null */
-            username?: string | null;
+            username?: string;
             /**
              * @description Key-value pairs of segment information.
              *     Will be transformed to empty object if null or undefined.
              *
-             * @default {}
              * @example {
              *       "team": "engineering",
              *       "role": "developer"
              *     }
              */
-            segments: {
+            segments?: {
                 [key: string]: string;
             };
         };
