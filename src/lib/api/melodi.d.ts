@@ -72,7 +72,7 @@ export interface paths {
                 };
             };
         };
-        /** Update an existing thread */
+        /** Create a new thread or update an existing thread */
         put: {
             parameters: {
                 query?: never;
@@ -80,14 +80,14 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            /** @description A thread object that needs to be updated */
+            /** @description The full thread object */
             requestBody: {
                 content: {
                     "application/json": components["schemas"]["CreateThreadRequest"];
                 };
             };
             responses: {
-                /** @description Thread successfully updated */
+                /** @description Thread successfully created or updated */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -112,46 +112,7 @@ export interface paths {
                 };
             };
         };
-        /** Create a new thread */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            /** @description A thread object that needs to be created */
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["CreateThreadRequest"];
-                };
-            };
-            responses: {
-                /** @description Thread successfully created */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Thread"];
-                    };
-                };
-                /** @description Unauthorized */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Internal Server Error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -358,23 +319,7 @@ export interface paths {
             /** @description External user object for creation or update */
             requestBody: {
                 content: {
-                    "application/json": {
-                        /** @description External identifier for the user */
-                        externalId: string;
-                        /** @description User's email address */
-                        email?: string | null;
-                        /** @description User's name */
-                        name?: string | null;
-                        /** @description User's username */
-                        username?: string | null;
-                        /**
-                         * @description Key-value pairs where the key is the segment type name and the value is the segment value
-                         * @default {}
-                         */
-                        segments?: {
-                            [key: string]: string;
-                        };
-                    };
+                    "application/json": components["schemas"]["CreateExternalUserRequest"];
                 };
             };
             responses: {
@@ -425,63 +370,60 @@ export interface components {
     schemas: {
         Thread: {
             /** @description Unique identifier for the thread */
-            id?: number | null;
+            id: number;
             /** @description External thread ID */
             externalId?: string | null;
             /** @description ID of the organization to which the thread belongs */
-            organizationId?: number;
-            /** @description ID of the project to which the thread belongs, specify either projectId or projectName */
-            projectId?: number | null;
-            /** @description Name of the project to which the thread belongs, specify either projectId or projectName */
-            projectName?: string | null;
-            /** @description Array of messages associated with the thread */
-            messages: (components["schemas"]["MarkdownMessage"] | components["schemas"]["JsonMessage"])[];
+            organizationId: number;
+            project: {
+                id: number;
+                name: string;
+            };
+            messages: components["schemas"]["Message"][];
             externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
             /** @description Metadata associated with the thread */
-            metadata?: {
+            metadata: {
                 [key: string]: string;
             };
             /**
              * Format: date-time
              * @description Date when the thread was created
              */
-            createdAt?: string;
+            createdAt: string;
             /**
              * Format: date-time
              * @description Date when the thread was last updated
              */
-            updatedAt?: string;
+            updatedAt: string;
+        };
+        BaseMessage: {
+            externalId?: string | null;
+            role: string;
+        };
+        BaseMessageResponse: components["schemas"]["BaseMessage"] & {
+            /** @default {} */
+            metadata: {
+                [key: string]: string;
+            };
         };
         /** Markdown Message */
-        MarkdownMessage: {
-            externalId?: string | null;
+        MarkdownMessage: components["schemas"]["BaseMessageResponse"] & {
             /**
              * @default markdown
              * @enum {string}
              */
             type: "markdown";
-            role: string;
             content: string | null;
-            /** @default {} */
-            metadata: {
-                [key: string]: string;
-            };
         };
         /** JSON Message */
-        JsonMessage: {
-            externalId?: string | null;
+        JsonMessage: components["schemas"]["BaseMessageResponse"] & {
             /**
              * @default json
              * @enum {string}
              */
             type: "json";
-            role: string;
             jsonContent: {
                 [key: string]: unknown;
-            };
-            /** @default {} */
-            metadata: {
-                [key: string]: string;
             };
         };
         /** @description Message object that can be either a Markdown or JSON message.
@@ -489,6 +431,30 @@ export interface components {
          *     For JSON messages, use the 'jsonContent' field.
          *      */
         Message: components["schemas"]["MarkdownMessage"] | components["schemas"]["JsonMessage"];
+        BaseMessageCreateRequest: components["schemas"]["BaseMessage"] & {
+            metadata?: {
+                [key: string]: string;
+            } | null;
+        };
+        CreateMarkdownMessageRequest: components["schemas"]["BaseMessageCreateRequest"] & {
+            /**
+             * @default markdown
+             * @enum {string}
+             */
+            type: "markdown";
+            content: string;
+        };
+        CreateJsonMessageRequest: components["schemas"]["BaseMessageCreateRequest"] & {
+            /**
+             * @default json
+             * @enum {string}
+             */
+            type: "json";
+            jsonContent: {
+                [key: string]: unknown;
+            };
+        };
+        CreateMessageRequest: components["schemas"]["CreateMarkdownMessageRequest"] | components["schemas"]["CreateJsonMessageRequest"];
         Error: {
             error?: string;
         };
@@ -504,15 +470,15 @@ export interface components {
              */
             feedbackType: "POSITIVE" | "NEGATIVE";
             /** @description Text content of the feedback */
-            feedbackText?: string | null;
+            feedbackText?: string;
             /** @description External ID of the thread containing the target message */
             externalThreadId: string;
             /** @description ID of the specific message for feedback. If not provided, feedback will be attached to the thread's last message */
-            externalMessageId?: string | null;
+            externalMessageId?: string;
             /** @description Recommended - ID of the project this thread belongs to. Helps ensure correct thread identification */
-            projectId?: number | null;
+            projectId?: number;
             /** @description External user information for associating feedback with a user */
-            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
+            externalUser?: components["schemas"]["CreateExternalUserRequest"];
             /**
              * @description Key-value pairs where:
              *     - key: attribute name (must match an existing attribute in the project)
@@ -569,14 +535,6 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
-        UserInfo: {
-            id?: string | null;
-            email: string;
-        };
-        JSONObject: {
-            [key: string]: string | number | boolean | components["schemas"]["JSONObject"] | components["schemas"]["JSONArray"];
-        };
-        JSONArray: components["schemas"]["JSONObject"][];
         Project: {
             /**
              * Format: int32
@@ -595,25 +553,23 @@ export interface components {
             /** @description Name of the project to be created */
             name: string;
         };
-        CreateThreadRequest: {
-            externalId?: string | null;
-            projectId: number;
-            projectName?: string | null;
-            messages: (components["schemas"]["MarkdownMessage"] | components["schemas"]["JsonMessage"])[];
+        BaseCreateThreadRequest: {
+            externalId?: string;
+            messages: components["schemas"]["CreateMessageRequest"][];
             metadata?: {
                 [key: string]: string;
             };
-            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
-        } | {
-            externalId?: string | null;
-            projectId?: number | null;
-            projectName: string;
-            messages: (components["schemas"]["MarkdownMessage"] | components["schemas"]["JsonMessage"])[];
-            metadata?: {
-                [key: string]: string;
-            };
-            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
+            externalUser?: components["schemas"]["CreateExternalUserRequest"];
         };
+        /** Create Thread with Project ID */
+        CreateThreadWithProjectIdRequest: components["schemas"]["BaseCreateThreadRequest"] & {
+            projectId: number;
+        };
+        /** Create Thread with Project Name */
+        CreateThreadWithProjectNameRequest: components["schemas"]["BaseCreateThreadRequest"] & {
+            projectName: string;
+        };
+        CreateThreadRequest: components["schemas"]["CreateThreadWithProjectIdRequest"] | components["schemas"]["CreateThreadWithProjectNameRequest"];
         /** @description Represents an attribute. Note: The combination of projectId and name must be unique.
          *      */
         Attribute: {
@@ -706,22 +662,21 @@ export interface components {
             /** @description External identifier for the user */
             externalId: string;
             /** @description User's email address. Will be transformed to undefined if null */
-            email?: string | null;
+            email?: string;
             /** @description User's name. Will be transformed to undefined if null */
-            name?: string | null;
+            name?: string;
             /** @description User's username. Will be transformed to undefined if null */
-            username?: string | null;
+            username?: string;
             /**
              * @description Key-value pairs of segment information.
              *     Will be transformed to empty object if null or undefined.
              *
-             * @default {}
              * @example {
              *       "team": "engineering",
              *       "role": "developer"
              *     }
              */
-            segments: {
+            segments?: {
                 [key: string]: string;
             };
         };
