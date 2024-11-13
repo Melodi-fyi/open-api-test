@@ -46,7 +46,7 @@ export async function putThread() {
       "api-key": process.env.MELODI_API_KEY,
     },
     body: {
-      externalId: "from-generated-client-2",
+      externalId: "from-generated-client-3",
       projectId: 12074,
       messages: [
         {
@@ -75,6 +75,9 @@ export async function putThread() {
           content: "2 + 2 = 4",
         },
       ],
+      externalUser: {
+        externalId: "from-generated-client",
+      },
     },
   });
 

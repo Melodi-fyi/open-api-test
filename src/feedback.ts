@@ -6,12 +6,12 @@ export async function postFeedback() {
       "api-key": process.env.MELODI_API_KEY,
     },
     body: {
-      externalThreadId: "from-generated-client-2",
+      externalThreadId: "from-generated-client-3",
       externalMessageId: "3",
       feedbackType: "POSITIVE",
       feedbackText: "this is test feedback",
       externalUser: {
-        externalId: "mintlify-user-1",
+        externalId: "from-generated-client",
       },
     },
   });

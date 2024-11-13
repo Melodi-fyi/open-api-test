@@ -72,7 +72,7 @@ export interface paths {
                 };
             };
         };
-        /** Update an existing thread */
+        /** Create a new thread or update an existing thread */
         put: {
             parameters: {
                 query?: never;
@@ -80,14 +80,14 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            /** @description A thread object that needs to be updated */
+            /** @description The full thread object */
             requestBody: {
                 content: {
                     "application/json": components["schemas"]["CreateThreadRequest"];
                 };
             };
             responses: {
-                /** @description Thread successfully updated */
+                /** @description Thread successfully created or updated */
                 200: {
                     headers: {
                         [name: string]: unknown;
