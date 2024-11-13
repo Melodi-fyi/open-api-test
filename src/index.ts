@@ -1,6 +1,6 @@
-import { getThreads, postFeedback, putThread } from "./threads";
+import { postFeedback } from "./feedback";
+import { getThreads, putThread } from "./threads";
 
-console.log("Hello, world!");
 getThreads();
 putThread();
 postFeedback();
