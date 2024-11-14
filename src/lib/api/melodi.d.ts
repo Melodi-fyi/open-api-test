@@ -661,11 +661,11 @@ export interface components {
         CreateExternalUserRequest: {
             /** @description External identifier for the user */
             externalId: string;
-            /** @description User's email address. Will be transformed to undefined if null */
+            /** @description User's email address */
             email?: string;
-            /** @description User's name. Will be transformed to undefined if null */
+            /** @description User's name */
             name?: string;
-            /** @description User's username. Will be transformed to undefined if null */
+            /** @description User's username */
             username?: string;
             /**
              * @description Key-value pairs of segment information.
