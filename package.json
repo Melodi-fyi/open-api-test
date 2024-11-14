@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "main": "tsc && node dist/index.js",
-    "generate-types": "npx openapi-typescript ../docs/openapi.yaml -o ./src/lib/api/melodi.d.ts"
+    "generate-types": "npx openapi-typescript https://app.melodi.fyi/openapi.yaml -o ./src/lib/api/melodi.d.ts"
   },
   "repository": {
     "type": "git",
