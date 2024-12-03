@@ -380,7 +380,7 @@ export interface components {
                 name: string;
             };
             messages: components["schemas"]["Message"][];
-            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
+            externalUser?: components["schemas"]["ExternalUser"] | null;
             /** @description Metadata associated with the thread */
             metadata: {
                 [key: string]: string;
@@ -424,7 +424,7 @@ export interface components {
             type: "json";
             jsonContent: {
                 [key: string]: unknown;
-            };
+            } | null;
         };
         /** @description Message object that can be either a Markdown or JSON message.
          *     For Markdown messages, use the 'content' field.
@@ -525,7 +525,7 @@ export interface components {
             /** @description Text content of the feedback */
             feedbackText?: string | null;
             /** @description Information about the external user who provided the feedback */
-            externalUser?: components["schemas"]["CreateExternalUserRequest"] | null;
+            externalUser?: components["schemas"]["ExternalUser"] | null;
             /** @description List of attribute options with their full attribute details */
             attributeOptions: (components["schemas"]["AttributeOption"] & {
                 attribute: components["schemas"]["Attribute"];
